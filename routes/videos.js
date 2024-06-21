@@ -4,13 +4,16 @@ import uuid4 from "uuid4";
 import dotenv from "dotenv";
 
 dotenv.config();
-const BACKEND_URL = process.env.BACKEND_URL;
-
 const router = express.Router();
 
 const readVideos = () => {
   const videosFile = fs.readFileSync("./data/videos.json");
   return JSON.parse(videosFile);
+};
+
+const writeVideos = (allVideos) => {
+  const videos = JSON.stringify(allVideos);
+  fs.writeFileSync("./data/videos.json", videos);
 };
 
 // GET /videos
@@ -61,12 +64,12 @@ router.post("/", (req, res) => {
     const { title, description, image } = req.body;
     const newVideo = {
       id: uuid4(),
-      title: title || "New video title",
-      description: description || "Some decription about the video",
+      title: title || "Video Title",
+      description: description || "Some decription about the video.",
       image: image || "http://localhost:8080/images/thumbnail.jpg",
       channel: "Nilufar Shaikh",
-      views: 0,
-      likes: 0,
+      views: 20,
+      likes: 10,
       duration: "49:20",
       video: "https://unit-3-project-api-0a5620414506.herokuapp.com/stream",
       timestamp: Date.now(),
@@ -74,16 +77,22 @@ router.post("/", (req, res) => {
         {
           id: uuid4(),
           name: "Trudy Jankowski",
-          comment: "I really enjoyed this video! Thanks for posting",
+          comment: "I really enjoyed this video! Thanks for posting.",
           likes: 3,
+          timestamp: Date.now(),
+        },
+        {
+          id: uuid4(),
+          name: "Shruti Nayak",
+          comment: "Amazing video!",
+          likes: 2,
           timestamp: Date.now(),
         },
       ],
     };
 
     const videosData = readVideos();
-    const videos = JSON.stringify([...videosData, newVideo]);
-    fs.writeFileSync("./data/videos.json", videos);
+    writeVideos([...videosData, newVideo]);
     res.status(201).json(newVideo);
   } catch (error) {
     res.status(500).json("Error while uploading the video.");
