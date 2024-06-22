@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const router = express.Router();
+const BACKEND_URL = process.env.BACKEND_URL;
 
 const readVideos = () => {
   const videosFile = fs.readFileSync("./data/videos.json");
@@ -53,7 +54,6 @@ router.get("/:id", (req, res) => {
 
     res.status(200).json(video);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Error while fetching the video" });
   }
 });
@@ -66,7 +66,7 @@ router.post("/", (req, res) => {
       id: uuid4(),
       title: title || "Video Title",
       description: description || "Some decription about the video.",
-      image: image || "http://localhost:8080/images/thumbnail.jpg",
+      image: image || `${BACKEND_URL}/images/thumbnail.jpg`,
       channel: "Nilufar Shaikh",
       views: 20,
       likes: 10,
